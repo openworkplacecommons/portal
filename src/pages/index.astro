@@ -89,9 +89,11 @@ const { courses } = await getCatalogue();
   <section class="section container">
     <h2>Curricula in progress</h2>
     <ul class="grid list">
-      {courses.map((c) => (
-        <CourseCard course={c} />
-      ))}
+      {courses
+        .filter((c) => !c.illustrative)
+        .map((c) => (
+          <CourseCard course={c} />
+        ))}
     </ul>
     <p>
       <a href={url('/curricula/')}>See the full catalogue</a>

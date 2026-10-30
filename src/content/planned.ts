@@ -7,7 +7,7 @@ import type { Course } from './types';
  * These entries carry only a title, a one-line scope (taken from curricula
  * docs/08-roadmap-and-decisions.md) and a status. They contain no lessons, outcomes or
  * questions, and are never shown as available. An entry disappears as soon as a loaded
- * course with a matching ID exists. See docs/adr/0002-planned-curricula-placeholders.md.
+ * catalogue course (not an `examples/` illustration) matches by ID or title. See docs/adr/0002-planned-curricula-placeholders.md.
  */
 export interface PlannedTopic {
   slug: string;
@@ -15,6 +15,8 @@ export interface PlannedTopic {
   summary: string;
   /** Canonical IDs that, once loaded from curricula, replace this placeholder. */
   replacedByIds: string[];
+  // A catalogue course whose title matches also replaces it, so topics without an agreed ID
+  // (none is defined for them yet) are retired when real content arrives.
 }
 
 export const PLANNED_TOPICS: readonly PlannedTopic[] = [
@@ -38,21 +40,30 @@ export const PLANNED_TOPICS: readonly PlannedTopic[] = [
   },
 ];
 
+const normalizeTitle = (s: string) =>
+  s
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+
 export function plannedCourses(loaded: readonly Course[]): Course[] {
-  const loadedIds = new Set(loaded.map((c) => c.id));
-  return PLANNED_TOPICS.filter((t) => !t.replacedByIds.some((id) => loadedIds.has(id))).map(
-    (t) => ({
-      slug: t.slug,
-      title: t.title,
-      summary: t.summary,
-      status: 'coming-soon' as const,
-      audience: [],
-      lastReviewed: null,
-      competencies: [],
-      modules: [],
-      practiceItemCount: 0,
-      hasEvaluationGuide: false,
-      illustrative: false,
-    }),
-  );
+  // Illustrative examples demonstrate structure only; they never stand in for a published course.
+  const real = loaded.filter((c) => !c.illustrative);
+  const ids = new Set(real.map((c) => c.id));
+  const titles = new Set(real.map((c) => normalizeTitle(c.title)));
+  const replaced = (t: PlannedTopic) =>
+    t.replacedByIds.some((id) => ids.has(id)) || titles.has(normalizeTitle(t.title));
+  return PLANNED_TOPICS.filter((t) => !replaced(t)).map((t) => ({
+    slug: t.slug,
+    title: t.title,
+    summary: t.summary,
+    status: 'coming-soon' as const,
+    audience: [],
+    lastReviewed: null,
+    competencies: [],
+    modules: [],
+    practiceItemCount: 0,
+    hasEvaluationGuide: false,
+    illustrative: false,
+  }));
 }

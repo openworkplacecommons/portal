@@ -29,5 +29,12 @@ jobs:
         run: npm run content:sync
       - run: npm test
       - run: npm run build
+        env:
+          CONTENT_STRICT: '1'
+      - name: Install browser for e2e tests
+        run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+        env:
+          CI: '1'
       - name: Build without curricula content (planned-only fallback)
         run: rm -rf .cache && npm run build

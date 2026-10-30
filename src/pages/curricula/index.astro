@@ -8,6 +8,8 @@ import { STATUS_LABEL } from '../../lib/status';
 import { LINKS } from '../../lib/site';
 
 const { courses, source } = await getCatalogue();
+const catalogue = courses.filter((c) => !c.illustrative);
+const examples = courses.filter((c) => c.illustrative);
 const statuses = [...new Set(courses.map((c) => c.status))];
 ---
 
@@ -48,10 +50,24 @@ const statuses = [...new Set(courses.map((c) => c.status))];
     </p>
 
     <ul class="grid list" data-list>
-      {courses.map((c) => (
+      {catalogue.map((c) => (
         <CourseCard course={c} />
       ))}
     </ul>
+    {examples.length > 0 && (
+      <section data-examples>
+        <h2>Illustrative examples</h2>
+        <p class="muted">
+          Samples that demonstrate the content structure. They are not catalogue courses and have
+          not been reviewed.
+        </p>
+        <ul class="grid list">
+          {examples.map((c) => (
+            <CourseCard course={c} />
+          ))}
+        </ul>
+      </section>
+    )}
     <p hidden data-empty>
       No curricula match your filters.
     </p>
@@ -103,6 +119,9 @@ const statuses = [...new Set(courses.map((c) => c.status))];
       );
       el.hidden = !hit;
       if (hit) shown++;
+    }
+    for (const sec of document.querySelectorAll<HTMLElement>('[data-examples]')) {
+      sec.hidden = !sec.querySelector('[data-course]:not([hidden])');
     }
     if (count) count.textContent = `${shown} ${shown === 1 ? 'curriculum' : 'curricula'}`;
     if (empty) empty.hidden = shown > 0;

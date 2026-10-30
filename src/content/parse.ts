@@ -70,13 +70,17 @@ export function parseCourse(files: CourseFiles, ctx: ParseContext): Course {
 
   const ref = (o: Obj, key: string) => {
     const rel = str(o[key]);
-    return rel ? files.read(rel) : undefined;
+    if (!rel) return undefined;
+    const text = files.read(rel);
+    if (text === undefined) throw new ContentError(`${where}: ${key} "${rel}" not found`);
+    return text;
   };
 
   const modules: Module[] = (Array.isArray(doc.modules) ? doc.modules : []).map((m, i) => {
     if (!isObj(m)) throw new ContentError(`${where}: modules[${i}] is not a mapping`);
     const resources: LessonRef[] = strList(m.resource_refs).map((path) => {
       const lesson = files.read(path);
+      if (lesson === undefined) throw new ContentError(`${where}: lesson "${path}" not found`);
       const title = lesson ? str(parseFrontMatter(lesson).title) : undefined;
       return { path, title, url: ctx.blobUrl(path) };
     });

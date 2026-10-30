@@ -43,13 +43,42 @@ describe('buildCatalogue', () => {
     expect(r.source).toEqual({ repo: 'https://example.test/c', ref: 'deadbeef' });
   });
 
-  it('replaces a planned placeholder once the real course loads', async () => {
+  it('keeps the planned placeholder when only an illustrative example exists', async () => {
     const root = fixture({ 'examples/r/course.yaml': course('OWC-AI-101') });
     const r = await buildCatalogue(new FsContentSource(root));
-    expect(r.courses.filter((c) => c.title.startsWith('Responsible AI'))).toHaveLength(0);
+    expect(r.courses.filter((c) => c.status === 'coming-soon')).toHaveLength(PLANNED_TOPICS.length);
+    expect(r.courses.find((c) => c.id === 'OWC-AI-101')?.illustrative).toBe(true);
+  });
+
+  it('replaces a placeholder when a catalogue course matches by ID', async () => {
+    const root = fixture({ 'courses/r/course.yaml': course('OWC-AI-101') });
+    const r = await buildCatalogue(new FsContentSource(root));
+    expect(r.courses.some((c) => c.title === 'Responsible AI at Work')).toBe(false);
     expect(r.courses.filter((c) => c.status === 'coming-soon')).toHaveLength(
       PLANNED_TOPICS.length - 1,
     );
+  });
+
+  it('replaces a placeholder when a catalogue course matches by title', async () => {
+    const root = fixture({
+      'courses/cyber/course.yaml': course('OWC-CY-101').replace(
+        'T OWC-CY-101',
+        'Cybersecurity  awareness',
+      ),
+    });
+    const r = await buildCatalogue(new FsContentSource(root));
+    expect(r.courses.filter((c) => c.slug === 'cybersecurity-awareness')).toHaveLength(0);
+    expect(r.courses.some((c) => c.id === 'OWC-CY-101')).toBe(true);
+  });
+
+  it('reports duplicate course IDs and keeps the first', async () => {
+    const root = fixture({
+      'courses/a/course.yaml': course('OWC-D-1'),
+      'courses/b/course.yaml': course('OWC-D-1'),
+    });
+    const r = await buildCatalogue(new FsContentSource(root));
+    expect(r.courses.filter((c) => c.id === 'OWC-D-1')).toHaveLength(1);
+    expect(r.issues).toEqual([{ path: 'courses/b', message: 'duplicate course ID "OWC-D-1"' }]);
   });
 
   it('records invalid courses as issues instead of failing the build', async () => {
@@ -69,6 +98,7 @@ describe('buildCatalogue', () => {
       'courses/a/course.yaml': course('OWC-A-1', 'competencies_ref: ../../secret.yaml\n'),
     });
     const r = await buildCatalogue(new FsContentSource(root));
-    expect(r.courses.find((c) => c.id === 'OWC-A-1')?.competencies).toEqual([]);
+    expect(r.courses.some((c) => c.id === 'OWC-A-1')).toBe(false);
+    expect(r.issues[0].message).toMatch(/competencies_ref .* not found/);
   });
 });

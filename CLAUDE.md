@@ -27,4 +27,4 @@ Domain: openworkplacecommons.org. Canonical content: https://github.com/openwork
 
 ## Commands
 
-`npm run verify` runs format check, lint, type check, tests and build (CI runs the same). Run `npm run content:sync` first to exercise real content.
+`npm run verify` runs format check, lint, type check, unit tests, build and Playwright e2e (CI runs the same; e2e needs `npx playwright install chromium` once). Run `npm run content:sync` first to exercise real content.

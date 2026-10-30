@@ -58,12 +58,27 @@ describe('parseCourse', () => {
     });
   });
 
-  it('tolerates missing referenced files', () => {
-    const c = parseCourse({ manifest, read: () => undefined }, ctx);
+  it('rejects references to missing files instead of publishing dead links', () => {
+    const without = (missing: string) => (p: string) => (p === missing ? undefined : read(p));
+    for (const f of [
+      'competencies.yaml',
+      'lessons/introduction.md',
+      'practice/questions.yaml',
+      'evaluation/guide.yaml',
+    ]) {
+      expect(() => parseCourse({ manifest, read: without(f) }, ctx)).toThrow(/not found/);
+    }
+  });
+
+  it('allows optional references to be omitted from the manifest', () => {
+    const lean = manifest
+      .replace(/^competencies_ref.*\n/m, '')
+      .replace(/^practice_ref.*\n/m, '')
+      .replace(/^evaluation_guide_ref.*\n/m, '');
+    const c = parseCourse({ manifest: lean, read }, ctx);
     expect(c.competencies).toEqual([]);
     expect(c.practiceItemCount).toBe(0);
     expect(c.hasEvaluationGuide).toBe(false);
-    expect(c.modules[0].resources[0].title).toBeUndefined();
   });
 
   it('rejects unsupported schema versions', () => {

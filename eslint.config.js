@@ -3,7 +3,16 @@ import tseslint from 'typescript-eslint';
 import astro from 'eslint-plugin-astro';
 
 export default [
-  { ignores: ['dist/', '.astro/', '.cache/', 'node_modules/'] },
+  {
+    ignores: [
+      'test-results/',
+      'playwright-report/',
+      'dist/',
+      '.astro/',
+      '.cache/',
+      'node_modules/',
+    ],
+  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   ...astro.configs.recommended,
