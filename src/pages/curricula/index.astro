@@ -1,0 +1,146 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import CourseCard from '../../components/CourseCard.astro';
+import Notice from '../../components/Notice.astro';
+import { getCatalogue } from '../../content/catalogue';
+import { STATUS_LABEL } from '../../lib/status';
+import { LINKS } from '../../lib/site';
+
+const { courses, source } = await getCatalogue();
+const statuses = [...new Set(courses.map((c) => c.status))];
+---
+
+<BaseLayout
+  title="Curricula"
+  description="Browse Open Workplace Commons curricula, all currently drafts or planned."
+>
+  <PageHeader
+    title="Curricula"
+    lede="Browse planned and draft workplace courses. Content is read from the curricula repository; the portal keeps no separate copy."
+  />
+
+  <div class="container">
+    <Notice title="Drafts only">
+      <p>
+        No course has completed educational or subject-matter review. Entries marked “Coming soon”
+        have no published content yet.
+      </p>
+    </Notice>
+
+    <form class="filters" role="search" aria-label="Filter curricula" data-filters>
+      <div>
+        <label for="q">Search</label>
+        <input id="q" name="q" type="search" autocomplete="off" />
+      </div>
+      <div>
+        <label for="status">Status</label>
+        <select id="status" name="status">
+          <option value="all">All statuses</option>
+          {statuses.map((s) => (
+            <option value={s}>{STATUS_LABEL[s]}</option>
+          ))}
+        </select>
+      </div>
+    </form>
+    <p class="muted" role="status" aria-live="polite" data-count>
+      {courses.length} {courses.length === 1 ? 'curriculum' : 'curricula'}
+    </p>
+
+    <ul class="grid list" data-list>
+      {courses.map((c) => (
+        <CourseCard course={c} />
+      ))}
+    </ul>
+    <p hidden data-empty>
+      No curricula match your filters.
+    </p>
+
+    <p class="muted source">
+      {source ? (
+        <>
+          Content source:{' '}
+          <a href={`${source.repo}/tree/${source.ref}`}>
+            curricula @ <code>{source.ref.slice(0, 7)}</code>
+          </a>
+          .
+        </>
+      ) : (
+        <>
+          No curricula checkout was available at build time, so only planned topics are shown. See{' '}
+          <a href={LINKS.portal}>the portal README</a> for how to sync content.
+        </>
+      )}
+    </p>
+  </div>
+</BaseLayout>
+
+<script>
+  import { matchesQuery } from '../../lib/search';
+  import type { CourseStatus } from '../../content/types';
+
+  const form = document.querySelector<HTMLFormElement>('[data-filters]');
+  const items = [...document.querySelectorAll<HTMLElement>('[data-course]')];
+  const count = document.querySelector('[data-count]');
+  const empty = document.querySelector<HTMLElement>('[data-empty]');
+
+  function apply() {
+    if (!form) return;
+    const q = (form.elements.namedItem('q') as HTMLInputElement).value;
+    const status = (form.elements.namedItem('status') as HTMLSelectElement).value as
+      CourseStatus | 'all';
+    let shown = 0;
+    for (const el of items) {
+      const hit = matchesQuery(
+        {
+          title: el.dataset.search ?? '',
+          summary: '',
+          audience: [],
+          status: el.dataset.status as CourseStatus,
+        },
+        q,
+        status,
+      );
+      el.hidden = !hit;
+      if (hit) shown++;
+    }
+    if (count) count.textContent = `${shown} ${shown === 1 ? 'curriculum' : 'curricula'}`;
+    if (empty) empty.hidden = shown > 0;
+  }
+
+  form?.addEventListener('input', apply);
+  form?.addEventListener('submit', (e) => e.preventDefault());
+</script>
+
+<style>
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin-block: var(--space-5) var(--space-3);
+  }
+  label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: var(--space-1);
+  }
+  input,
+  select {
+    font: inherit;
+    padding: var(--space-2) var(--space-3);
+    min-width: min(100%, 16rem);
+    border: 1px solid var(--color-text-muted);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    color: var(--color-text);
+  }
+  .list {
+    list-style: none;
+    padding: 0;
+    max-width: none;
+  }
+  .source {
+    margin-top: var(--space-5);
+    font-size: var(--step--1);
+  }
+</style>

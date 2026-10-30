@@ -1,0 +1,141 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Card from '../components/Card.astro';
+import CourseCard from '../components/CourseCard.astro';
+import Notice from '../components/Notice.astro';
+import { getCatalogue } from '../content/catalogue';
+import { LINKS, SITE, url } from '../lib/site';
+
+const { courses } = await getCatalogue();
+---
+
+<BaseLayout title={SITE.name} description={SITE.description}>
+  <section class="hero">
+    <div class="container">
+      <p class="eyebrow">{SITE.tagline}</p>
+      <h1>Shared workplace education, built in the open.</h1>
+      <p class="lede">
+        Open Workplace Commons is an independent, community-driven initiative to create and maintain
+        reusable workplace curricula, lessons, practice questions and evaluation guidelines, so
+        organizations don't each have to build the same training from scratch.
+      </p>
+      <div class="button-row">
+        <a class="button" href={url('/curricula/')}>
+          Browse curricula
+        </a>
+        <a class="button button--ghost" href={url('/contribute/')}>
+          Help improve them
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section container">
+    <Notice title="Early stage">
+      <p>
+        Every course here is a draft or planned. Nothing on this site is approved training material
+        yet, and example content is illustrative only.
+      </p>
+    </Notice>
+
+    <h2>What OWC provides</h2>
+    <div class="grid">
+      <Card title="Curricula and outcomes">
+        <p>Standardized course structures with learning objectives and competency definitions.</p>
+      </Card>
+      <Card title="Lessons and scenarios">
+        <p>Readable lessons, real-world examples and practical activities you can adapt.</p>
+      </Card>
+      <Card title="Practice and guidance">
+        <p>
+          Openly published practice questions with answers and explanations, plus non-binding
+          evaluation guidelines and sample rubrics.
+        </p>
+      </Card>
+      <Card title="Transparent provenance">
+        <p>
+          References, revision history, reviewer scope and contributor attribution stay visible.
+        </p>
+      </Card>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="container">
+      <h2>Who it's for</h2>
+      <div class="grid">
+        <Card title="Learners and visitors">
+          <p>Read open materials without an account.</p>
+        </Card>
+        <Card title="Educators and designers">
+          <p>Find, adapt and contribute lessons, activities and questions.</p>
+        </Card>
+        <Card title="Businesses and L&D teams">
+          <p>
+            Adopt content, tailor it to internal policies and deliver it on the platform you already
+            use.
+          </p>
+        </Card>
+        <Card title="Developers and vendors">
+          <p>
+            Content is plain Markdown and YAML in a public repository, so tools can read it without
+            the portal.
+          </p>
+        </Card>
+      </div>
+    </div>
+  </section>
+
+  <section class="section container">
+    <h2>Curricula in progress</h2>
+    <ul class="grid list">
+      {courses.map((c) => (
+        <CourseCard course={c} />
+      ))}
+    </ul>
+    <p>
+      <a href={url('/curricula/')}>See the full catalogue</a>
+    </p>
+  </section>
+
+  <section class="section section--alt">
+    <div class="container">
+      <h2>What OWC is not</h2>
+      <p>
+        OWC does not administer certification exams, issue credentials, accredit training providers
+        or record learner results. Organizations that use OWC content run their own assessments, set
+        their own policies and issue their own completion records. Generic content may not satisfy
+        every employer's regulatory requirements.
+      </p>
+      <p>
+        The source of truth for all content is the{' '}
+        <a href={LINKS.curricula}>curricula repository</a>. This portal only presents it.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-block: var(--space-7);
+    background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-surface-alt) 100%);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .eyebrow {
+    color: var(--color-accent);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: var(--step--1);
+    margin-bottom: var(--space-2);
+  }
+  .hero h1 {
+    color: var(--color-brand-strong);
+    max-width: 22ch;
+  }
+  .list {
+    list-style: none;
+    padding: 0;
+    max-width: none;
+  }
+</style>

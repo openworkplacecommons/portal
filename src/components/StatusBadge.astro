@@ -1,0 +1,30 @@
+---
+import type { CourseStatus } from '../content/types';
+import { STATUS_LABEL } from '../lib/status';
+
+const { status } = Astro.props as { status: CourseStatus };
+---
+
+<span class={`badge badge--${status}`}>{STATUS_LABEL[status]}</span>
+
+<style>
+  .badge {
+    display: inline-block;
+    padding: 0.1rem 0.6rem;
+    border-radius: 999px;
+    font-size: var(--step--1);
+    font-weight: 700;
+    white-space: nowrap;
+    background: var(--color-draft-bg);
+    color: var(--color-draft-text);
+  }
+  .badge--coming-soon {
+    background: var(--color-soon-bg);
+    color: var(--color-soon-text);
+  }
+  .badge--community-reviewed,
+  .badge--expert-reviewed {
+    background: var(--color-ok-bg);
+    color: var(--color-ok-text);
+  }
+</style>

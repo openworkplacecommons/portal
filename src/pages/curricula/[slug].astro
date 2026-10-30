@@ -1,0 +1,123 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+import Notice from '../../components/Notice.astro';
+import { getCatalogue } from '../../content/catalogue';
+import { STATUS_HELP } from '../../lib/status';
+import { url } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const { courses } = await getCatalogue();
+  return courses.map((course) => ({ params: { slug: course.slug }, props: { course } }));
+}
+
+const { course } = Astro.props;
+const planned = course.status === 'coming-soon';
+---
+
+<BaseLayout title={course.title} description={course.summary}>
+  <PageHeader title={course.title} lede={course.summary}>
+    <p>
+      <StatusBadge status={course.status} /> <span class="muted">{STATUS_HELP[course.status]}</span>
+    </p>
+  </PageHeader>
+
+  <div class="container section">
+    {planned ? (
+      <Notice title="Coming soon">
+        <p>
+          This course is planned but nothing has been published. Outcomes, lessons and practice
+          questions will appear here once a draft exists in the curricula repository.
+        </p>
+      </Notice>
+    ) : (
+      <Notice title={course.illustrative ? 'Illustrative draft' : 'Draft'}>
+        <p>
+          {course.illustrative
+            ? 'This is an example used to demonstrate the content structure. It has not been reviewed and is not an approved training course.'
+            : 'This course has not completed the review required to remove its draft label.'}{' '}
+          Organizations should apply their own policies and legal requirements.
+        </p>
+      </Notice>
+    )}
+
+    {!planned && (
+      <>
+        <h2>Details</h2>
+        <dl class="meta">
+          <dt>Course ID</dt>
+          <dd>
+            <code>{course.id}</code>
+          </dd>
+          <dt>Content version</dt>
+          <dd>{course.version ?? 'Unknown'}</dd>
+          <dt>Schema version</dt>
+          <dd>{course.schemaVersion}</dd>
+          <dt>Language</dt>
+          <dd>{course.locale ?? 'Unknown'}</dd>
+          <dt>Audience</dt>
+          <dd>{course.audience.length ? course.audience.join(', ') : 'Not specified'}</dd>
+          <dt>License</dt>
+          <dd>
+            {course.license === 'TBD' || !course.license ? 'Not yet determined' : course.license}
+          </dd>
+          <dt>Last reviewed</dt>
+          <dd>{course.lastReviewed ?? 'Never reviewed'}</dd>
+          <dt>Practice questions</dt>
+          <dd>{course.practiceItemCount}</dd>
+          <dt>Evaluation guide</dt>
+          <dd>{course.hasEvaluationGuide ? 'Draft available' : 'None yet'}</dd>
+        </dl>
+
+        <h2>Competencies</h2>
+        {course.competencies.length ? (
+          <ul>
+            {course.competencies.map((c) => (
+              <li>
+                <code>{c.id}</code> {c.statement}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="muted">No competencies defined yet.</p>
+        )}
+
+        <h2>Modules</h2>
+        {course.modules.length ? (
+          <ol>
+            {course.modules.map((m) => (
+              <li>
+                <strong>{m.title}</strong> <span class="muted">({m.id})</span>
+                <ul>
+                  {m.resources.map((r) => (
+                    <li>
+                      <a href={r.url}>{r.title ?? r.path}</a>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <p class="muted">No modules defined yet.</p>
+        )}
+
+        {course.source && (
+          <>
+            <h2>Source</h2>
+            <p>
+              Read from <a href={course.source.url}>{course.source.path}</a> in the curricula
+              repository at revision <code>{course.source.ref.slice(0, 7)}</code>. Lessons open on
+              GitHub; propose changes there.
+            </p>
+          </>
+        )}
+      </>
+    )}
+
+    <p>
+      <a href={url('/curricula/')}>← All curricula</a>
+    </p>
+  </div>
+</BaseLayout>

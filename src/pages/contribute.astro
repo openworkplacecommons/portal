@@ -1,0 +1,81 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Notice from '../components/Notice.astro';
+import { LINKS } from '../lib/site';
+
+const DOCS = `${LINKS.curricula}/blob/main/docs`;
+---
+
+<BaseLayout
+  title="Contribute"
+  description="How community members can propose improvements to OWC curricula."
+>
+  <PageHeader
+    title="Contribute"
+    lede="OWC content is improved in the open. Every change is reviewed before it is published."
+  />
+
+  <div class="container section">
+    <Notice title="Where things stand">
+      <p>
+        The portal has no submission form or accounts yet. Today, contributions happen on GitHub. A
+        plain-language contribution experience for people who don't use Git is planned for a later
+        milestone. It is not available now.
+      </p>
+      <p>
+        The content license and contributor policy are still to be ratified, so third-party content
+        is not being published yet. Discussion, feedback and specification proposals are welcome
+        now.
+      </p>
+    </Notice>
+
+    <h2>Ways to help today</h2>
+    <ul>
+      <li>
+        <strong>Give feedback on the specification.</strong> Open an issue or comment on a pull
+        request in the <a href={LINKS.curriculaIssues}>curricula repository</a>.
+      </li>
+      <li>
+        <strong>Propose a change.</strong> Fork <a href={LINKS.curricula}>curricula</a>, edit the
+        Markdown or YAML, and open a <a href={LINKS.curriculaPulls}>pull request</a>.
+      </li>
+      <li>
+        <strong>Report a portal problem</strong> such as accessibility barriers or broken links in
+        the <a href={LINKS.portalIssues}>portal issue tracker</a>.
+      </li>
+      <li>
+        <strong>Offer subject expertise.</strong> Reviewers with relevant experience are needed once
+        drafts are ready for review. Say so in an issue.
+      </li>
+    </ul>
+
+    <h2>How review works</h2>
+    <p>
+      Proposals move from draft through automated validation and editorial review, with
+      subject-matter review where needed, then approval and merge into a versioned release. Nothing
+      is published automatically, and contributors don't approve their own substantive changes. See{' '}
+      <a href={`${DOCS}/05-contribution-and-review.md`}>the full review policy</a> (a draft
+      proposal).
+    </p>
+
+    <h2>What to include</h2>
+    <ul>
+      <li>The course or lesson ID and version you're changing.</li>
+      <li>Why the change helps learners, and authoritative references for factual claims.</li>
+      <li>Where it came from, and confirmation you have the right to share it.</li>
+      <li>Accessibility notes, and the language or region it applies to.</li>
+    </ul>
+    <p class="muted">
+      Don't include private employee data, proprietary exam questions, copyrighted material without
+      permission, or secrets.
+    </p>
+
+    <h2>Planned for later</h2>
+    <p>
+      Sign-in, rich-text editing, suggesting improvements on a lesson page, translations, drafts and
+      automated pull request creation are future capabilities. They are listed in the
+      <a href={`${LINKS.portal}/blob/main/docs/ROADMAP.md`}>roadmap</a> and are not yet implemented.
+    </p>
+  </div>
+</BaseLayout>

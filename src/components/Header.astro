@@ -1,0 +1,74 @@
+---
+import Logo from './Logo.astro';
+import { NAV, SITE, url } from '../lib/site';
+
+const { current = '' } = Astro.props as { current?: string };
+const isCurrent = (href: string) => (href === '/' ? current === '/' : current.startsWith(href));
+---
+
+<header class="site-header">
+  <div class="container bar">
+    <a class="brand" href={url('/')}>
+      <Logo />
+      <span>{SITE.name}</span>
+    </a>
+    <nav aria-label="Main">
+      <ul>
+        {NAV.map((item) => (
+          <li>
+            <a href={url(item.href)} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3) var(--space-5);
+    padding-block: var(--space-3);
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--color-brand-strong);
+    font-weight: 700;
+    font-size: var(--step-1);
+    text-decoration: none;
+  }
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-4);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: none;
+  }
+  nav a {
+    display: inline-block;
+    padding: var(--space-2) 0;
+    color: var(--color-text);
+    text-decoration: none;
+    border-bottom: 3px solid transparent;
+  }
+  nav a:hover {
+    border-bottom-color: var(--color-border);
+  }
+  nav a[aria-current='page'] {
+    font-weight: 700;
+    border-bottom-color: var(--color-accent);
+  }
+</style>
