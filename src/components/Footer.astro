@@ -1,0 +1,51 @@
+---
+import { LINKS, SITE, url } from '../lib/site';
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="tag">
+      <strong>{SITE.name}</strong> — {SITE.tagline}
+    </p>
+    <p class="disclaimer">
+      OWC publishes open educational content. It does not run certification exams, issue
+      credentials, accredit providers or record learner results. Published courses are drafts until
+      reviewed.
+    </p>
+    <ul>
+      <li>
+        <a href={LINKS.curricula}>Curricula repository</a>
+      </li>
+      <li>
+        <a href={LINKS.portal}>Portal repository</a>
+      </li>
+      <li>
+        <a href={url('/docs/')}>Documentation</a>
+      </li>
+      <li>
+        <a href={url('/about/')}>About</a>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: var(--space-7);
+    padding-block: var(--space-6);
+    background: var(--color-surface-alt);
+    border-top: 1px solid var(--color-border);
+    font-size: var(--step--1);
+  }
+  .disclaimer {
+    color: var(--color-text-muted);
+  }
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-5);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+</style>

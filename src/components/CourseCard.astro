@@ -1,0 +1,29 @@
+---
+import Card from './Card.astro';
+import StatusBadge from './StatusBadge.astro';
+import { url } from '../lib/site';
+import type { Course } from '../content/types';
+
+const { course } = Astro.props as { course: Course };
+---
+
+<li
+  class="item"
+  data-course
+  data-status={course.status}
+  data-search={[course.title, course.summary, course.id ?? '', ...course.audience].join(' ')}
+>
+  <Card title={course.title} href={url(`/curricula/${course.slug}/`)}>
+    <p>
+      <StatusBadge status={course.status} />
+      {course.illustrative && <span class="muted"> Illustrative example</span>}
+    </p>
+    <p>{course.summary}</p>
+    {course.id && (
+      <p class="muted">
+        <code>{course.id}</code>
+        {course.version && <> · v{course.version}</>}
+      </p>
+    )}
+  </Card>
+</li>

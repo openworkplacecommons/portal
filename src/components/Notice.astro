@@ -1,0 +1,26 @@
+---
+const { title } = Astro.props as { title?: string };
+---
+
+<aside class="notice" role="note">
+  {title && <strong>{title}</strong>}
+  <slot />
+</aside>
+
+<style>
+  .notice {
+    border: 1px solid var(--color-border);
+    border-left: 6px solid var(--color-accent);
+    background: var(--color-surface);
+    border-radius: var(--radius);
+    padding: var(--space-4) var(--space-5);
+    margin-block: var(--space-5);
+  }
+  .notice :global(p:last-child) {
+    margin-bottom: 0;
+  }
+  strong {
+    display: block;
+    margin-bottom: var(--space-1);
+  }
+</style>

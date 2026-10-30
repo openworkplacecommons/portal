@@ -1,0 +1,25 @@
+---
+const { title, lede } = Astro.props as { title: string; lede?: string };
+---
+
+<div class="page-header">
+  <div class="container">
+    <h1>{title}</h1>
+    {lede && <p class="lede">{lede}</p>}
+    <slot />
+  </div>
+</div>
+
+<style>
+  .page-header {
+    padding-block: var(--space-6) var(--space-5);
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface);
+  }
+  h1 {
+    color: var(--color-brand-strong);
+  }
+  .lede {
+    margin-bottom: 0;
+  }
+</style>

@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Notice from '../components/Notice.astro';
+import { LINKS } from '../lib/site';
+
+const spec = (file: string) => `${LINKS.curricula}/blob/main/docs/${file}`;
+const specDocs = [
+  ['Principles and scope', '01-principles.md'],
+  ['Content model', '02-content-model.md'],
+  ['Canonical format and examples', '03-format-and-examples.md'],
+  ['Interoperability and distribution', '04-interoperability.md'],
+  ['Contributions and review', '05-contribution-and-review.md'],
+  ['Accessibility, localization and licensing', '06-accessibility-localization-licensing.md'],
+  ['Publication, versioning and validation', '07-publication-and-validation.md'],
+  ['Roadmap and open decisions', '08-roadmap-and-decisions.md'],
+] as const;
+const portalDocs = [
+  ['Project vision', 'PROJECT_VISION.md'],
+  ['Architecture', 'ARCHITECTURE.md'],
+  ['Roadmap', 'ROADMAP.md'],
+] as const;
+---
+
+<BaseLayout
+  title="Documentation"
+  description="Links to the OWC specification, GitHub Wiki and portal documentation."
+>
+  <PageHeader
+    title="Documentation"
+    lede="The specification and guides live on GitHub, so they stay versioned and reviewable. This page links to them."
+  />
+
+  <div class="container section">
+    <h2>Wiki</h2>
+    <p>
+      The <a href={LINKS.curriculaWiki}>curricula GitHub Wiki</a> offers orientation and how-to
+      guidance. It is navigation only. The reviewable specification is in the repository.
+    </p>
+
+    <h2>Content specification (draft v0.1)</h2>
+    <Notice>
+      <p>The specification is a proposal, not a ratified standard.</p>
+    </Notice>
+    <ul>
+      <li>
+        <a href={spec('README.md')}>Documentation index</a>
+      </li>
+      {specDocs.map(([label, file]) => (
+        <li>
+          <a href={spec(file)}>{label}</a>
+        </li>
+      ))}
+    </ul>
+
+    <h2>Portal documentation</h2>
+    <ul>
+      <li>
+        <a href={LINKS.portal}>Portal repository and README</a>
+      </li>
+      {portalDocs.map(([label, file]) => (
+        <li>
+          <a href={`${LINKS.portal}/blob/main/docs/${file}`}>{label}</a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</BaseLayout>

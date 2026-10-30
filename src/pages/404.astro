@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { url } from '../lib/site';
+---
+
+<BaseLayout title="Page not found">
+  <div class="container section">
+    <h1>Page not found</h1>
+    <p>
+      That page doesn't exist. Try the <a href={url('/curricula/')}>curricula catalogue</a> or the{' '}
+      <a href={url('/')}>home page</a>.
+    </p>
+  </div>
+</BaseLayout>

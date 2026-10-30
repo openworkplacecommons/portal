@@ -1,0 +1,5 @@
+{
+  "repo": "https://github.com/openworkplacecommons/curricula",
+  "ref": "cd7ac2a8d2288819575206c74af3a0fe5f14c7b7",
+  "note": "Pinned curricula revision consumed at build time. Bump deliberately; replace with a release tag once curricula publishes releases."
+}

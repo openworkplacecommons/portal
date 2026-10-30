@@ -1,0 +1,19 @@
+---
+interface Props {
+  size?: number;
+}
+const { size = 36 } = Astro.props;
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 48 48"
+  width={size}
+  height={size}
+  aria-hidden="true"
+  focusable="false"
+>
+  <circle cx="18" cy="20" r="12" fill="currentColor" opacity="0.85"></circle>
+  <circle cx="30" cy="20" r="12" fill="var(--color-accent)" opacity="0.85"></circle>
+  <circle cx="24" cy="31" r="12" fill="var(--color-brand-strong)" opacity="0.85"></circle>
+</svg>

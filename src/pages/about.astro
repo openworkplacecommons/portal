@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Notice from '../components/Notice.astro';
+import { LINKS, SITE } from '../lib/site';
+---
+
+<BaseLayout title="About" description="Mission, openness and governance of Open Workplace Commons.">
+  <PageHeader title="About Open Workplace Commons" lede={SITE.tagline} />
+
+  <div class="container section">
+    <h2>Mission</h2>
+    <p>
+      Many organizations build the same workplace training independently. OWC is a
+      community-maintained, freely reusable foundation for workplace education: curricula,
+      competencies, lessons, practice questions with answers, and non-binding evaluation guidance.
+      We want it to be a lasting public resource and not a proprietary learning platform.
+    </p>
+
+    <h2>Openness</h2>
+    <ul>
+      <li>
+        <strong>One source of truth.</strong> Content lives in the public
+        <a href={LINKS.curricula}>curricula repository</a>. This portal presents it and does not own
+        it.
+      </li>
+      <li>
+        <strong>Tool-neutral.</strong> Content is plain Markdown and YAML so any LMS, authoring tool
+        or site can use it. Nothing requires this portal or any OWC-affiliated product.
+      </li>
+      <li>
+        <strong>Traceable.</strong> References, authorship, reviewer scope and revision history are
+        kept with the content.
+      </li>
+    </ul>
+
+    <h2>Governance</h2>
+    <p>
+      Governance is still being defined. The draft design describes editorial maintainers,
+      subject-matter reviewers, curriculum reviewers and release maintainers, with independent
+      review for substantive changes. Reviewer thresholds, escalation, and the final content and
+      software licenses are open decisions. See the
+      <a href={`${LINKS.curricula}/blob/main/docs/08-roadmap-and-decisions.md`}>open questions</a>.
+    </p>
+
+    <Notice title="What OWC does not do">
+      <p>
+        OWC does not run certification exams, keep secret official exam banks, issue credentials,
+        accredit providers or record learner results. Adopting organizations choose how to deliver
+        and evaluate training and may issue their own completion records. OWC does not guarantee
+        that generic content meets any employer's regulatory or compliance requirements.
+      </p>
+    </Notice>
+
+    <h2>Interoperability</h2>
+    <p>
+      Formats such as SCORM, QTI, CASE and LTI are interoperability <em>targets</em> in the draft
+      specification. None is supported or claimed to conform yet.
+    </p>
+  </div>
+</BaseLayout>
